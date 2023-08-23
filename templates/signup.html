@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %} Register {% endblock %}
+
+
+{% block main %}
+<button  onclick="location.href='/'" class="btn btn-primary">Back</button>
+<body id = mainBody style ="margin: 35px;">
+    <h3 class="modal-title w-100 text-center">Register</h3>
+    <!-- make a post to the form -->
+    <form action="/signup" method="post">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Email</label>
+            <input autocomplete="off" type="email" class="form-control" name="email" id="email" placeholder="Email">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Password</label>
+            <input autocomplete="off" type="password" class="form-control" name="password" id="password" placeholder="Password">
+          </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="firstName">First Name</label>
+              <input autocomplete="off" class="form-control" name="firstname" id="firstname" placeholder="First Name">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="lastName">Last Name</label>
+              <input autocomplete="off" class="form-control" name="lastname" id="lastname" placeholder="Last Name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="checkbox" class="form-check-input" id="terms">
+            <label class="form-check-label" for="terms">I Agree to the <a href="#">Terms and Conditions</a>.</label>
+          </div>
+        <button type="submit" class="btn btn-success">Register</button>
+        <div class="mb-3">
+        {% with messages = get_flashed_messages() %}
+           {% if messages %}
+              {% for message in messages %}
+                 {{ message }}
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
+        </div>
+    </form>
+
+
+<body>
+{% endblock %}

@@ -1,0 +1,303 @@
+body {
+  font-family: 'Lexend Exa', sans-serif !important;
+  background-color: #c4dfe9 !important;
+}
+
+h1 {
+  font-family: 'Lexend Exa', sans-serif !important;
+}
+
+#breathe {
+  border-radius: 17px;
+  width: 50px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: width 5s ease-in-out;
+  background: #ffffff;
+  font-size: 50px;
+}
+
+.setting {
+  font-family: 'Lexend Exa', sans-serif !important;
+  font-size: 30px;
+
+  margin-left: 20px;
+  margin-top: 30px;
+
+  color: #ffffff;
+}
+
+.switch {
+  float: right;
+
+  margin-top: 5px !important;
+  margin-right: 30px !important;
+}
+
+p {
+  font-family: 'Lexend Exa', sans-serif;
+}
+
+#welcome-logo {
+  width: 750px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+#welcome-button {
+  font-family: 'Lexend Exa', sans-serif;
+  font-size: 25px;
+  
+  border-radius: 30px;
+
+  width: 150px;
+  height: 75px;
+
+  text-align: center;
+  /*padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;*/
+
+  /*display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;*/
+}
+
+.buttons {
+  margin: 50px 200px auto 200px;
+  
+  display: flex;
+  justify-content: space-evenly;
+}
+  
+.oimg {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+}
+  
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  /* background-color: rgba(0,0,0,0.5); Black background with opacity */
+  backdrop-filter: blur(8px);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  overflow-x: hidden;
+  transition: 0.5s;
+  color:rgb(0, 0, 0)
+}
+  
+.overlay-content {
+  position: relative;
+  top: 10%;
+  width: 45%;
+  margin-left: 27.5%;
+  margin-right: 27.5%;
+  height: 700px;
+  text-align: center;
+  margin-top: 30px;
+  background-color: rgb(255, 251, 234);
+}
+
+.inner-overlay-content {
+  margin: 1rem;
+}
+
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #c2c2c2;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+
+.anybutton {
+  position: absolute;
+  background: rgba(124, 201, 237, .0); 
+  z-index: 2;
+  border-radius: 3px;
+  border-color: white;
+  }
+
+/*use ids because there will only be one of this kind of button  */
+#buddha {
+  top:25%;
+  left:50%;
+  width:10%;
+  height:5%;
+}
+#breathing {
+  top: 10%;
+  left: 50%;
+  width:10%;
+  height:5%;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Track */
+::-webkit-scrollbar-track { 
+  width: 20px !important;
+  border-radius: 0;
+  background: #c4c4c4;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #a3a3a3; 
+  border-radius: 10px;
+  width: 10px !important;
+}
+
+
+/* Collapseable div */
+.collapsible {
+  background-color: #2c2c2c;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-size: 25px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  text-align: left;
+  display: none;
+  overflow: hidden;
+  background-color: #3d3d3d;
+}
+.content a{
+  font-size: 10px;
+}
+.overlay-content a{
+  font-size: 15px;
+}
+.content img{
+  display: flex;
+  justify-content: center;
+}
+
+.gameIcons img{
+  width: 30%;
+  height: auto;
+  object-fit: cover;
+  float: left; 
+  margin-left: 10%;
+  margin-right: 10%; 
+  margin-bottom: 0.5em;
+}
+
+/* side bar for the settings*/
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #bcbcbc;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* timer */
+.timer {
+  font-family: 'Lexend Exa', sans-serif;
+  display: inline-block;
+  padding: 24px 32px;
+  border-radius: 30px;
+  background: #091e4d;
+}
+
+.timer__part {
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.timer__btn {
+  width: 50px;
+  height: 50px;
+  margin-left: 16px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  background: #8208e6;
+  cursor: pointer;
+}
+
+.timer__btn--start {
+  background: #00b84c;
+}
+
+.timer__btn--stop {
+  background: #ff0256;
+}

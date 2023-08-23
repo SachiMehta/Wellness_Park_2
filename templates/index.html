@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}Welcome Screen{% endblock %}
+
+
+{% block main %}
+
+
+    
+    <img id="welcome-logo" src="static/img/nav_welcome.png">
+    
+    {% if session["user_id"] %}
+
+    <button type="button" onclick="location.href='/park'" id="welcome-button"
+        class="btn btn-success">begin</button>
+    <button type="button" onclick="location.href='/logout'" id="welcome-button"
+        class="btn btn-danger">logout</button>
+    <button type="button" onclick="location.href='/about'" id="welcome-button"
+        class="btn btn-warning">about</button>
+
+    {% else %}
+
+    <div class="buttons">
+    <button type="button" onclick="location.href='/login'" id="welcome-button"
+        class="btn btn-success">login</button>
+    <button type="button" onclick="location.href='/signup'" id="welcome-button"
+      class="btn btn-success">join</button>
+    <button type="button" onclick="location.href='/about'" id="welcome-button"
+        class="btn btn-success">about</button>
+    </div>
+
+    {% endif %}
+
+
+
+        <!-- if user is signed in say welcom {first name}
+        take away login and sign up buttons
+    give them a begin button  -->
+
+{% endblock %}

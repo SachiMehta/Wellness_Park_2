@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div style="width:100%;">
+  <img id="img_ID" src="static/img/den/nav.png" usemap="#map" border="0" width="100%" alt="" />
+</div>
+<map id="map_ID" name="map">
+  <form id="updateViewForm" action="/den" method="post">
+  <!-- journal -->
+  <area shape="rect" coords="417, 173, 588, 265" onmouseover="hover('den', 'journal');" onmouseout="unhover('den');" />
+  <!-- todo -->
+  <area shape="rect" coords="532, 15, 620, 111" onmouseover="hover('den', 'todo');" onmouseout="unhover('den');"
+    onclick="sub('ignore', 'open'); " />
+  <!-- calendar -->
+  <area shape="rect" coords="947, 9, 1066, 140" onmouseover="hover('den', 'calendar');" onmouseout="unhover('den');"
+    onclick="" />
+  <!-- newton's cradle-->
+  <area shape="rect" coords="704, 169, 813, 257" onmouseover="hover('den', 'cradle');" onmouseout="unhover('den');"
+    onclick="sub('ignore', 'open2');" />
+  <!-- timer-->
+  <area shape="rect" coords="1040, 152, 1184, 249" onmouseover="hover('den', 'timer');" onmouseout="unhover('den');"
+    onclick="openNav('timerOverlay')" />
+    <input type="hidden" name="updateViewHid" id="updateViewHid">
+    <input type="submit" id="updateView" style="visibility: hidden;"  name="updateView">
+</form>
+</map>
+
+<body id="mainBody">
+
+
+  <main>
+    </div>
+  </main>
+
+  <div id="todoOverlay" class="overlay">
+
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('todoOverlay')">&times;</a>
+    <div class="overlay-content" style="overflow-x: hidden;
+    overflow-y: auto;">
+
+      <div class="inner-overlay-content">
+        <h1 style="text-align: center;">To-do</h1>
+
+        <form action="/den" method="post">
+          <div class="form-group">
+            <label for="input">Add something to your to do list</label>
+            <input name="input" id="input" type="text" class="form-control" placeholder="Enter something to do">
+          </div>
+          <button name="inputTodo" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        
+
+
+        <table width="100%">
+
+          <tbody>
+            {% for row in rows %}
+            <tr>
+
+              <form action="/den" method="post">
+                {% if row['checked'] == 0 %}
+                <td width="5%"><input id="check{{row['id']}}" type="submit" name="check-todo" value="0"></td>
+                {% elif row['checked'] == 1 %}
+                <td width="5%"><input style="background-color: black" onclick="this.form.submit()"
+                    id="check{{row['id']}}" type="submit" name="check-todo" value="1"></td>
+                {% endif %}
+                <input type="hidden" name="id" value="{{row['id']}}">
+              </form>
+
+              <!-- fix the ids because they are not right -->
+              <td width="85%" style="text-align:left">{{row['task']}}</td>
+              <form action="/den" method="post">
+                <td width="10%"><button name="del-todo" id="del-{{row['id']}}" value="{{row['id']}}">delete</button>
+                </td>
+              </form>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="moodOverlay" class="overlay">
+
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('moodOverlay')">&times;</a>
+    <div class="overlay-content" style="overflow-x: hidden;
+    overflow-y: auto;">
+
+      <div class="inner-overlay-content">
+        <h1 style="text-align: center;">Mood Tracker</h1>
+
+
+        <div>
+          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map2" border="0" width="100%" alt="" />
+        </div>
+        <map id="map_ID2" name="map2">
+
+          <form id="moodForm" action="/den" method="post">
+            <area shape="circle" coords="206, 232, 33" onmouseover="hover2('den/mood', '1');"
+              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='1')" />
+            <area shape="circle" coords="280, 232, 33" onmouseover="hover2('den/mood', '2');"
+              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='2')" />
+            <area shape="circle" coords="348, 232, 33" onmouseover="hover2('den/mood', '3');"
+              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='3')" />
+            <area shape="circle" coords="418, 232, 33" onmouseover="hover2('den/mood', '4');"
+              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='4')" />
+            <area shape="circle" coords="480, 232, 33" onmouseover="hover2('den/mood', '5');"
+              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='5')" />
+
+            <input type="hidden" name="moodInput" id="moodInput">
+            <input type="submit" id="moodsub" style="visibility: hidden;" name="mood">
+          </form>
+        </map>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="timerOverlay" class="overlay">
+
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('timerOverlay')">&times;</a>
+    <div class="overlay-content" style="overflow-x: hidden;
+    overflow-y: auto;">
+
+      <div class="inner-overlay-content">
+        <h1 style="text-align: center;">Productivity Timer</h1>
+
+
+        <div class="timer"></div>
+
+      </div>
+    </div>
+  </div>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <div style="background-color: antiquewhite;" class="topcorner"></div>
+  <!-- <a class="source" href="https://www.youtube.com/watch?v=PIiMSMz7KzM">How to build a Countdown Timer in JavaScript - dcode</a> -->
+
+  <style type="text/css">
+    .topcorner{
+      position:absolute;
+      top:0;
+      right:0;
+      z-index:1;
+     }
+   </style>
+
+  {% block javascript %}
+
+  {% if open %}
+  <script>
+  document.getElementById('todoOverlay').style.width = "100%";
+  document.getElementById("mainBody").style.overflow = "hidden"</script>
+  {% endif %}
+
+  {% if open2 %}
+  <script>document.getElementById('moodOverlay').style.width = "100%";
+  document.getElementById("mainBody").style.overflow = "hidden"</script>
+  {% endif %}
+  
+  {% endblock %}
+
+
+  <script src="static/script.js"></script>
+  <script src="static/den.js"></script>
+</body>
+{% endblock %}
