@@ -21,7 +21,7 @@
   <area shape="rect" coords="1040, 152, 1184, 249" onmouseover="hover('den', 'timer');" onmouseout="unhover('den');"
     onclick="openNav('timerOverlay')" />
     <input type="hidden" name="updateViewHid" id="updateViewHid">
-    <input type="submit" id="updateView" style="visibility: hidden;"  name="updateView">
+    <input type="submit" id="updateView" style="display: none;"  name="updateView">
 </form>
 </map>
 
@@ -111,7 +111,7 @@
               onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='5')" />
 
             <input type="hidden" name="moodInput" id="moodInput">
-            <input type="submit" id="moodsub" style="visibility: hidden;" name="mood">
+            <input type="submit" id="moodsub" style="display: none;" name="mood">
           </form>
         </map>
 
@@ -128,8 +128,22 @@
       <div class="inner-overlay-content">
         <h1 style="text-align: center;">Productivity Timer</h1>
 
+        <div style="display:inline">
+          <h2 style="display:inline"> <input dir="rtl" id="minuteNumber" type="number" value="25" style="  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  background: none;"></h2><h2 style="display:inline">:</h2> <h2 style="display:inline" id ="secondNumber">00</h2>
+        <div>
+          <script> var input = document.getElementById('minuteNumber'); // get the input element
+input.addEventListener('input', resizeInput); 
+// bind the "resizeInput" callback on "input" event
+resizeInput.call(input); // immediately call the function
 
-        <div class="timer"></div>
+function resizeInput() {
+  this.style.width = this.value.length * 8 + 50 + "px";}
+</script>
 
       </div>
     </div>
