@@ -23,103 +23,149 @@ function hover2(page, element) {
      
    }
 
+$(document).ready(function() {
+    $('#secs').change(function() {
+      var n = $(this).val();
+      if (n < 0)
+        $(this).val(0);
+      if (n > 60)
+        $(this).val(60);
+    });
+});
+
+$(document).ready(function() {
+    $('#mins').change(function() {
+      var n = $(this).val();
+      if (n < 0)
+        $(this).val(0);
+      if (n > 60)
+        $(this).val(60);
+    });
+});
+function startUp(){
+// start up set up 
+var savedDistance = 1500000;
+var playing = "false";
+  
+//set starting time 
+try {
+  var savedDistance = JSON.parse(localStorage.getItem("distance"));
+} catch (exceptionVar) {
+  localStorage.setItem("distance", 1500000);
+  var savedDistance = JSON.parse(localStorage.getItem("distance"));
+}
+
+//keep the timer going on reload
+try {
+  var playing = localStorage.getItem("playing");
+} catch (exceptionVar) {
+  localStorage.setItem("playing", "false");
+  var playing = "false";
+}
+  
+document.getElementById("demo").innerHTML = localStorage.getItem('playing');
+var minutes = Math.floor(savedDistance / (1000 * 60));
+var seconds = String(Math.floor((savedDistance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+document.getElementById("mins").value = minutes;
+document.getElementById("secs").value = seconds;
+
+showUpperRight(minutes, seconds)
+var x = null
+
+if (playing == "true")
+{start();}
+}
+
+function reset()
+  {
+    stop();
+    document.getElementById("demo").innerHTML = "reset";
+    localStorage.setItem("distance", 1500000);
+    localStorage.setItem("playing", "false");
+    
+    document.getElementById("mins").value = 25;
+    document.getElementById("secs").value = String(0).padStart(2, '0');
+
+    showUpperRight("25", String(0).padStart(2, '0'))
+    
+  }
+
+window.onload = function(){
+  startUp();
+}
 
 
+function stop(){
+  localStorage.setItem('playing', "false");
+  clearInterval(x);
+  x = null
+}
 
+// Set the date we're counting down to
+function start(){
+localStorage.setItem('playing', "true");
+  
+var mins = document.getElementById("mins").value
+var sec = document.getElementById("secs").value
+var countTime = (sec*1000) + (mins*60000)
+localStorage.setItem('distance', countTime);
 
+//set end time 
+var td = new Date().getTime();
+var endTime = td + JSON.parse(localStorage.getItem('distance'));
+document.getElementById("demo").innerHTML = localStorage.getItem('distance');
 
-//class Timer {
-//   constructor(root) {
-//     root.innerHTML = Timer.getHTML();
-//     
+// Update the count down every 1 second
+x = setInterval(function() {
 
-//     this.el = {
-//       minutes: root.querySelector(".timer__part--minutes"),
-//       seconds: root.querySelector(".timer__part--seconds"),
-//       control: root.querySelector(".timer__btn--control"),
-//       reset: root.querySelector(".timer__btn--reset")
-//     };
+  // Get today's date and time
+  var now = new Date().getTime();
+    
+  // Find the distance between now and the count down date
+  var distance = endTime - now;
 
-//     this.interval = null;
-//     this.remainingSeconds = 0;
+  // Time calculations for days, hours, minutes and seconds
+  localStorage.setItem('distance', distance);
+  var minutes = Math.floor(distance / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+  // Output the result in an element with id="demo"
+  document.getElementById("mins").value = minutes;
+  document.getElementById("secs").value = seconds;
 
-//     this.el.control.addEventListener("click", () => {
-//       if (this.interval === null) {
-//         this.start();
-//       } else {
-//         this.stop();
-//       }
-//     });
+  showUpperRight(minutes, seconds)
+  //document.getElementById("demo").innerHTML = distance;
+    
+  // If the count down is over, write some text 
+  if (distance <= 1000) {
+    localStorage.setItem("distance", 0)
+    document.getElementById("mins").value = 0;
+    document.getElementById("secs").value = 0;
+    showUpperRight("0", "0")
+    
+    stop()
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+}
 
-//     this.el.reset.addEventListener("click", () => {
-//       const inputMinutes = prompt("Enter number of minutes:");
+function showUpperRight(minsval, secsval)
+{
+   
+  // select all elements with the class name "example"
+var mins = document.getElementsByClassName("mins2");
+var secs = document.getElementsByClassName("secs2");
 
-//       if (inputMinutes < 60) {
-//         this.stop();
-//         this.remainingSeconds = inputMinutes * 60;
-//         this.updateInterfaceTime();
-//       }
-//     });
-//   }
+// change the innerHTML of each selected element
+for (var i = 0; i < mins.length; i++) {
+  mins[i].innerHTML = minsval;
+  secs[i].innerHTML = secsval;
+}
 
-//   updateInterfaceTime() {
-//     const minutes = Math.floor(this.remainingSeconds / 60);
-//     const seconds = this.remainingSeconds % 60;
-
-//     this.el.minutes.textContent = minutes.toString().padStart(2, "0");
-//     this.el.seconds.textContent = seconds.toString().padStart(2, "0");
-//   }
-
-//   updateInterfaceControls() {
-//     if (this.interval === null) {
-//       this.el.control.innerHTML = `<span class="material-icons">play_arrow</span>`;
-//       this.el.control.classList.add("timer__btn--start");
-//       this.el.control.classList.remove("timer__btn--stop");
-//     } else {
-//       this.el.control.innerHTML = `<span class="material-icons">pause</span>`;
-//       this.el.control.classList.add("timer__btn--stop");
-//       this.el.control.classList.remove("timer__btn--start");
-//     }
-//   }
-
-//   start() {
-//     if (this.remainingSeconds === 0) return;
-
-//     this.interval = setInterval(() => {
-//       this.remainingSeconds--;
-//       this.updateInterfaceTime();
-
-//       if (this.remainingSeconds === 0) {
-//         this.stop();
-//       }
-//     }, 1000);
-
-//     this.updateInterfaceControls();
-//   }
-
-//   stop() {
-//     clearInterval(this.interval);
-
-//     this.interval = null;
-
-//     this.updateInterfaceControls();
-//   }
-
-//   static getHTML() {
-//     return `
-// 			<span class="timer__part timer__part--minutes">00</span>
-// 			<span class="timer__part">:</span>
-// 			<span class="timer__part timer__part--seconds">00</span>
-// 			<button type="button" class="timer__btn timer__btn--control timer__btn--start">
-// 				<span class="material-icons">play_arrow</span>
-// 			</button>
-// 			<button type="button" class="timer__btn timer__btn--reset">
-// 				<span class="material-icons">timer</span>
-// 			</button>
-// 		`;
-//   }
-// }
-
-// new Timer(
-//   document.querySelector(".timer"),
-// );
+}
+//clear storage 
+$(window).unload(function() {
+  if (localStorage.getItem("playing") == "false")
+  {localStorage.clear();}
+});

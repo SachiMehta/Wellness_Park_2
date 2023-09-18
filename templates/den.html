@@ -129,28 +129,58 @@
         <h1 style="text-align: center;">Productivity Timer</h1>
 
         <div style="display:inline">
-          <h2 style="display:inline"> <input dir="rtl" id="minuteNumber" type="number" value="25" style="  border: none;
-  display: inline;
-  font-family: inherit;
-  font-size: inherit;
-  padding: none;
-  background: none;"></h2><h2 style="display:inline">:</h2> <h2 style="display:inline" id ="secondNumber">00</h2>
-        <div>
-          <script> var input = document.getElementById('minuteNumber'); // get the input element
-input.addEventListener('input', resizeInput); 
-// bind the "resizeInput" callback on "input" event
-resizeInput.call(input); // immediately call the function
 
-function resizeInput() {
-  this.style.width = this.value.length * 8 + 50 + "px";}
-</script>
+          <form>
+            <h2 style="display:inline"> <input dir="rtl" type=number min="0" max="100" id="mins" style="  border: none;
+            display: inline;
+            font-family: inherit;
+            font-size: inherit;
+            padding: none;
+            background: none;">
+            </h2><h2 style="display:inline">:</h2> 
+            <h2 style="display:inline"> <input type=number min="0" max="100" id="secs" style="  border: none;
+            display: inline;
+            font-family: inherit;
+            font-size: inherit;
+            padding: none;
+            background: none;">
+            </h2>
+          </form>
+          
+  <input type=button id="play" value="start" onclick="start()">
+  <input type=button id="pause" value="stop" onclick="stop()">
+  <input type=button id="reset" value="reset" onclick="reset()">
+<p id="demo"> meow</p>
+          
+        <div>
+          <script> 
+          var input = document.getElementById('mins'); // get the input element
+          input.addEventListener('input', resizeInput); 
+          // bind the "resizeInput" callback on "input" event
+          resizeInput.call(input); // immediately call the function
+          function resizeInput() {
+            this.style.width = this.value.length * 8 + 55 + "px";}
+
+          var input = document.getElementById('secs'); // get the input element
+          input.addEventListener('input', resizeInput); 
+          // bind the "resizeInput" callback on "input" event
+          resizeInput.call(input); // immediately call the function
+          function resizeInput() {
+            this.style.width = this.value.length * 8 + 60 + "px";}
+          </script>
 
       </div>
     </div>
+    </div>
+  </div>
   </div>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
-  <div style="background-color: antiquewhite;" class="topcorner"></div>
+  <div style="background-color: antiquewhite;" class="topcorner">
+    <h2 style="display:inline" class="mins2"></h2>
+    <h2 style="display:inline">:</h2> 
+    <h2 style="display:inline" class="secs2"></h2>
+  </div>
   <!-- <a class="source" href="https://www.youtube.com/watch?v=PIiMSMz7KzM">How to build a Countdown Timer in JavaScript - dcode</a> -->
 
   <style type="text/css">
@@ -180,5 +210,6 @@ function resizeInput() {
 
   <script src="static/script.js"></script>
   <script src="static/den.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 {% endblock %}

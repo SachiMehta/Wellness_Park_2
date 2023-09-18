@@ -36,6 +36,8 @@ def begin():
 
 @app.route("/den", methods=["GET", "POST"])
 def den():
+
+    # todo update methods 
     if request.method == "POST" and "inputTodo" in request.form:
         
         input = request.form.get('input')
@@ -68,8 +70,8 @@ def den():
         rows = db.execute("SELECT * FROM 'todo' WHERE user_id = ?", session["user_id"])
         print(rows)
         return render_template("den.html", open = True, rows = rows)
-        
 
+    # mood update methods 
     if request.method == "POST" and "mood" in request.form:
         input = request.form.get('moodInput')
         day = date.today()
@@ -98,10 +100,9 @@ def den():
         print(set)
         return render_template("den.html", open2 = True, set=set)
 
-
+    # opening views 
     if request.method == "POST" and "updateView" in request.form:
         input = request.form.get('updateViewHid')
-        print("chinchillas"        )
         
         if input == "open": #todo list
             rows = db.execute("SELECT * FROM 'todo' WHERE user_id = ?", session["user_id"])
@@ -124,6 +125,8 @@ def den():
         
         if input == "close": #open nothing
             return render_template("den.html")
+
+  
     return render_template("den.html")
 
 
