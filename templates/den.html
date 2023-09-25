@@ -94,9 +94,9 @@
 
 
         <div>
-          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map2" border="0" width="100%" alt="" />
+          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map" border="0" width="100%" alt="" />
         </div>
-        <map id="map_ID2" name="map2">
+        <map id="map_ID" name="map">
 
           <form id="moodForm" action="/den" method="post">
             <area shape="circle" coords="206, 232, 33" onmouseover="hover2('den/mood', '1');"
@@ -177,10 +177,13 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <div style="background-color: antiquewhite;" class="topcorner">
-    <h2 style="display:inline" class="mins2"></h2>
-    <h2 style="display:inline">:</h2> 
-    <h2 style="display:inline" class="secs2"></h2>
+    <h2 style="display:inline;" class="mins2"></h2>
+    <h2 style="display:inline;">:</h2> 
+    <h2 style="display:inline;" class="secs2"></h2>
   </div>
+
+  <button type="button" onclick="location.href='/park'; startUp();" id="welcome-button"
+        class="btn btn-success, topleft">begin</button>
   <!-- <a class="source" href="https://www.youtube.com/watch?v=PIiMSMz7KzM">How to build a Countdown Timer in JavaScript - dcode</a> -->
 
   <style type="text/css">
@@ -188,6 +191,15 @@
       position:absolute;
       top:0;
       right:0;
+      z-index:1;
+     }
+   </style>
+  
+  <style type="text/css">
+    .topleft{
+      position:absolute;
+      top:0;
+      left:0;
       z-index:1;
      }
    </style>
@@ -207,10 +219,19 @@
   
   {% endblock %}
 
-
+<script>
+    window.onload = function() {
+      startUp(); // Execute shared code when this page loads
+    };
+  </script>
+  
   <script src="static/script.js"></script>
-  <script src="static/den.js"></script>
+  <script src="static/den.js">
+    
+  </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
+
+
 {% endblock %}
 

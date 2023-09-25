@@ -63,18 +63,16 @@ try {
   var playing = "false";
 }
   
-document.getElementById("demo").innerHTML = localStorage.getItem('playing');
+// document.getElementById("demo").innerHTML = localStorage.getItem('playing');
 var minutes = Math.floor(savedDistance / (1000 * 60));
 var seconds = String(Math.floor((savedDistance % (1000 * 60)) / 1000)).padStart(2, '0');
 
-document.getElementById("mins").value = minutes;
-document.getElementById("secs").value = seconds;
 
-showUpperRight(minutes, seconds)
+show(String(minutes).padStart(2, '0'), String(seconds).padStart(2, '0'))
 var x = null
 
 if (playing == "true")
-{start();}
+{timerstart();}
 }
 
 function reset()
@@ -84,38 +82,48 @@ function reset()
     localStorage.setItem("distance", 1500000);
     localStorage.setItem("playing", "false");
     
-    document.getElementById("mins").value = 25;
-    document.getElementById("secs").value = String(0).padStart(2, '0');
-
-    showUpperRight("25", String(0).padStart(2, '0'))
+   
+    show("25", String(0).padStart(2, '0'))
     
   }
 
-window.onload = function(){
-  startUp();
-}
+
+    window.onload = function() {
+      startUp(); // Execute shared code when this page loads
+    };
+
 
 
 function stop(){
   localStorage.setItem('playing', "false");
   clearInterval(x);
   x = null
+  document.getElementById("mins").disabled = false;
+  document.getElementById("secs").disabled = false;
 }
 
 // Set the date we're counting down to
 function start(){
-localStorage.setItem('playing', "true");
-  
+document.getElementById("mins").disabled = true;
+document.getElementById("secs").disabled = true;
+
+localStorage.setItem('playing', "true"); 
+  //dependant - fixed
 var mins = document.getElementById("mins").value
 var sec = document.getElementById("secs").value
 var countTime = (sec*1000) + (mins*60000)
 localStorage.setItem('distance', countTime);
+timerstart();
+}
 
+//start the timer
+function timerstart(){
 //set end time 
 var td = new Date().getTime();
 var endTime = td + JSON.parse(localStorage.getItem('distance'));
-document.getElementById("demo").innerHTML = localStorage.getItem('distance');
+//document.getElementById("demo").innerHTML = localStorage.getItem('distance');
 
+  
 // Update the count down every 1 second
 x = setInterval(function() {
 
@@ -131,28 +139,36 @@ x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
   // Output the result in an element with id="demo"
-  document.getElementById("mins").value = minutes;
-  document.getElementById("secs").value = seconds;
-
-  showUpperRight(minutes, seconds)
+  show(String(minutes).padStart(2, '0'), String(seconds).padStart(2, '0'))
   //document.getElementById("demo").innerHTML = distance;
     
   // If the count down is over, write some text 
   if (distance <= 1000) {
     localStorage.setItem("distance", 0)
-    document.getElementById("mins").value = 0;
-    document.getElementById("secs").value = 0;
-    showUpperRight("0", "0")
+    show("0", "0")
     
     stop()
     document.getElementById("demo").innerHTML = "EXPIRED";
   }
 }, 1000);
+    
+}
+
+function show(minsval, secsval)
+{
+  try {
+      document.getElementById("mins").value = minsval;
+      document.getElementById("secs").value = secsval;
+      showUpperRight(minsval, secsval)
+  } catch (error) {
+    document.getElementById("mins3").innerHTML = minsval;
+    document.getElementById("secs3").innerHTML = secsval;
+  }
+  
 }
 
 function showUpperRight(minsval, secsval)
 {
-   
   // select all elements with the class name "example"
 var mins = document.getElementsByClassName("mins2");
 var secs = document.getElementsByClassName("secs2");
@@ -162,10 +178,24 @@ for (var i = 0; i < mins.length; i++) {
   mins[i].innerHTML = minsval;
   secs[i].innerHTML = secsval;
 }
+}
+
+
+
+  // select all elements with the class name "example"
+var mins = document.getElementsByClassName("mins3");
+
+
+// change the innerHTML of each selected element
+for (var i = 0; i < mins.length; i++) {
+  mins[i].innerHTML = localStorage.getItem('playing');
 
 }
+
+
 //clear storage 
-$(window).unload(function() {
-  if (localStorage.getItem("playing") == "false")
-  {localStorage.clear();}
-});
+// $(window).unload(function() {
+//   if (localStorage.getItem("playing") == "false")
+//   {localStorage.clear();}
+// });
+
