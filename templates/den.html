@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
 
 {% block main %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <div style="width:100%;">
   <img id="img_ID" src="static/img/den/nav.png" usemap="#map" border="0" width="100%" alt="" />
 </div>
 <map id="map_ID" name="map">
   <form id="updateViewForm" action="/den" method="post">
   <!-- journal -->
-  <area shape="rect" coords="417, 173, 588, 265" onmouseover="hover('den', 'journal');" onmouseout="unhover('den');" />
+  <area shape="rect" coords="417, 173, 588, 265" onmouseover="hover('den', 'journal');" onmouseout="unhover('den');" 
+    onclick="sub('ignore', 'open3');"/>
   <!-- todo -->
   <area shape="rect" coords="532, 15, 620, 111" onmouseover="hover('den', 'todo');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open'); " />
@@ -26,11 +28,6 @@
 </map>
 
 <body id="mainBody">
-
-
-  <main>
-    </div>
-  </main>
 
   <div id="todoOverlay" class="overlay">
 
@@ -119,6 +116,64 @@
     </div>
   </div>
 
+  <div id="journalOverlay" class="overlay" style="">
+
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('journalOverlay')">&times;</a>
+    <div class="overlay-content" style="overflow-x: hidden;
+    overflow-y: auto;">
+
+      <div class="inner-overlay-content">
+        <h1 style="text-align: center;">Journal</h1>
+      </div>
+      
+      <div style="background-color: coral; width: 20%; height: 100%">
+          <h2>Mood</h2>
+        
+        <div style="height:20%">
+          <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+          
+          <!-- CHART may have to move to Jinja -->
+          <script>
+              const xValues = ["Positive", "Neutral", "Negative"];
+              // these values will be based on the sentiment of the conversation using python 
+              // have to move this into a js jinja block 
+              // the overall sentiment will be added to the graph for each day in chart 
+              const yValues = [5, 3, 5];
+              const barColors = [
+                "red",
+                "yellow",
+                "green",
+              ];
+              
+              new Chart("myChart", {
+                type: "pie",
+                data: {
+                  labels: xValues,
+                  datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                  }]
+                },
+                options: {
+                  legend:
+                    {display:false},
+                  title: {
+                    display: false,
+                    text: "World Wide Wine Production 2018"
+                  }
+                }
+              });
+          </script>
+
+        </div>
+        <!--Change font size  -->
+        <h2>Reccomended</h2>
+
+      </div>
+      
+    </div>
+  </div>
+
   <div id="timerOverlay" class="overlay">
 
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav('timerOverlay')">&times;</a>
@@ -174,6 +229,7 @@
     </div>
   </div>
   </div>
+  
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <div style="background-color: antiquewhite;" class="topcorner">
@@ -194,8 +250,8 @@
       z-index:1;
      }
    </style>
-  
-  <style type="text/css">
+
+   <style type="text/css">
     .topleft{
       position:absolute;
       top:0;
@@ -216,6 +272,11 @@
   <script>document.getElementById('moodOverlay').style.width = "100%";
   document.getElementById("mainBody").style.overflow = "hidden"</script>
   {% endif %}
+
+  {% if open3 %}
+  <script>document.getElementById('journalOverlay').style.width = "100%";
+  document.getElementById("mainBody").style.overflow = "hidden"</script>
+  {% endif %}
   
   {% endblock %}
 
@@ -226,10 +287,9 @@
   </script>
   
   <script src="static/script.js"></script>
-  <script src="static/den.js">
-    
-  </script>
+  <script src="static/den.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </body>
 
 

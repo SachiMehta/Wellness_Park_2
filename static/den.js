@@ -159,12 +159,11 @@ function show(minsval, secsval)
   try {
       document.getElementById("mins").value = minsval;
       document.getElementById("secs").value = secsval;
-      showUpperRight(minsval, secsval)
+      
   } catch (error) {
-    document.getElementById("mins3").innerHTML = minsval;
-    document.getElementById("secs3").innerHTML = secsval;
+    //continue 
   }
-  
+  showUpperRight(minsval, secsval)
 }
 
 function showUpperRight(minsval, secsval)

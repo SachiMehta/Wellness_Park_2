@@ -123,6 +123,9 @@ def den():
 
             return render_template("den.html", set=set, open2 = True)
         
+        if input == "open3": #journal
+            return render_template("den.html", open3 = True)
+        
         if input == "close": #open nothing
             return render_template("den.html")
 
