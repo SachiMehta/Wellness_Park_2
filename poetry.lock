@@ -602,6 +602,14 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "joblib"
+version = "1.3.2"
+description = "Lightweight pipelining with Python functions"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "keyring"
 version = "24.2.0"
 description = "Store and access your passwords safely."
@@ -676,6 +684,28 @@ description = "MessagePack serializer"
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "nltk"
+version = "3.8.1"
+description = "Natural Language Toolkit"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = "*"
+joblib = "*"
+regex = ">=2021.8.3"
+tqdm = "*"
+
+[package.extras]
+all = ["scikit-learn", "python-crfsuite", "requests", "numpy", "pyparsing", "twython", "scipy", "matplotlib"]
+corenlp = ["requests"]
+machine_learning = ["numpy", "python-crfsuite", "scikit-learn", "scipy"]
+plot = ["matplotlib"]
+tgrep = ["pyparsing"]
+twitter = ["twython"]
 
 [[package]]
 name = "numpy"
@@ -855,6 +885,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "regex"
+version = "2023.10.3"
+description = "Alternative regular expression module, to replace re."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -1003,6 +1041,23 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "tqdm"
+version = "4.66.1"
+description = "Fast, Extensible Progress Meter"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+colorama = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+dev = ["pytest (>=6)", "pytest-cov", "pytest-timeout", "pytest-xdist"]
+notebook = ["ipywidgets (>=6)"]
+slack = ["slack-sdk"]
+telegram = ["requests"]
+
+[[package]]
 name = "urllib3"
 version = "1.26.15"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1069,7 +1124,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-ena
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.0,<3.11"
-content-hash = "b0daac134a01dc573a3102cd4e1be8574b2e0eb93773e0c32125fa732918ebc2"
+content-hash = "e4df1ad1d375471a29d3ae0bbe3193fb364b664af3c8d21bfec7708667c74a15"
 
 [metadata.files]
 anyio = []
@@ -1119,6 +1174,7 @@ itsdangerous = []
 "jaraco.classes" = []
 jeepney = []
 jinja2 = []
+joblib = []
 keyring = []
 langdetect = []
 lockfile = []
@@ -1126,6 +1182,7 @@ lz4 = []
 markupsafe = []
 more-itertools = []
 msgpack = []
+nltk = []
 numpy = []
 packaging = []
 pastel = []
@@ -1143,6 +1200,7 @@ pycparser = []
 pycryptodomex = []
 pylev = []
 pywin32-ctypes = []
+regex = []
 requests = []
 requests-toolbelt = []
 rsa = []
@@ -1155,6 +1213,7 @@ sqlalchemy = []
 sqlparse = []
 termcolor = []
 tomlkit = []
+tqdm = []
 urllib3 = []
 virtualenv = []
 webencodings = []

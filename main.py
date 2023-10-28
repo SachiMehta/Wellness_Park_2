@@ -86,18 +86,18 @@ def den():
         print(date)
 
         set = ""
-        rows = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id",
+        rows = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker' ",
                                 date=day, user_id=session['user_id'])
         
         try:
-            db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date", mood=input, user_id=session["user_id"], date=day)
+            db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date AND via = 'tracker'", mood=input, user_id=session["user_id"], date=day)
             set = rows[0]['mood']
         except:
             db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='tracker', date=day, mood=int(input))
             set = ""
 
         set = ""
-        mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id",
+        mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker' ",
                                     date=day, user_id=session['user_id'])
         try:
             set = mood[0]['mood']
@@ -214,7 +214,7 @@ def den():
             
             day = date.today()
             set = ""
-            mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id",
+            mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker'",
                                         date=day, user_id=session['user_id'])
             try:
                 set = mood[0]['mood']
