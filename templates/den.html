@@ -186,14 +186,14 @@
       </div>
 
       <div style="background-color: ghostwhite; width: 80%; height: 100%; display: block; float: left; overflow-y: auto;" id="chatBox">
-        <h1> something </h1>
+        <h1> Chat </h1>
 
         <!-- Example div for user input -->
         {% for journal_row in journal_rows %}
         <div style="text-align: left;
           {% if journal_row['author'] == 'AI' %} background-color: floralwhite; {% endif %}
           {% if journal_row['author'] == 'Me' %} background-color: rgb(231, 213, 177); {% endif %}
-          display: inline-block; width: 100%; margin-bottom: 10px;"> 
+          display: inline-block; width: 100%; margin-bottom: 10px; padding: 5px; padding-bottom: 20px; padding-top: 20px"> 
 
             <div style="width: 10%; height: 100%; float: left;">
               {% if journal_row['author'] == 'AI' %}
@@ -209,31 +209,29 @@
             <div style="float: left; width: 90%;">{{ journal_row['text'] }}</div>
         </div>
         {% endfor %}
-            <tr>
-
+      
 
         <!-- Blank div for control -->
         <div style="height: 25%;"> </div>
-
+        
+      
         <div style="position:absolute;
-          bottom:0;
+          
+          bottom:10px;
           left: 35%;
           z-index:1;
-          height: 10%">
+          height: 10%;
+          ">
           
-        <div style="display: inline-block;">
-          <button style="float: left;" onclick="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;">V</button>
-          <form action="/den" method="post">
-            <input name="journalInput" id="journalInput" type="text" autocomplete="off" class="form-control" placeholder="Enter something to do">
-            <button name="journalQuestion" type="submit" class="btn btn-primary">Submit</button>
-          </form>
-          <!--create post function and connect to ai  -->
+          <button style="float: left;" onclick="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;" class="btn btn-primary" >V</button>
           
-        </div>       
-
-
-</div>
-        
+          <form style="float: left;" action="/den" method="post">
+            <input style="float: left; width: 85%" name="journalInput" id="journalInput" type="text" autocomplete="off" class="form-control" placeholder="Ask a question">
+            <button style="float: left;" name="journalQuestion" type="submit" class="btn btn-primary">></button>
+          </form>    
+        </div>
+      </div>
+      
       </div>
     </div>
   </div>
