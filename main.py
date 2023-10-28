@@ -3,6 +3,15 @@
 # ONLY DO THIS ONCE
 # import nltk 
 # nltk.download("vader_lexicon")
+try:
+  from nltk.sentiment import SentimentIntensityAnalyzer
+  sia = SentimentIntensityAnalyzer()
+except LookupError as e:
+  import nltk 
+  nltk.download("vader_lexicon")
+  from nltk.sentiment import SentimentIntensityAnalyzer
+  sia = SentimentIntensityAnalyzer()
+
 
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -13,8 +22,7 @@ from helper import login_required
 from datetime import date
 from bardapi import Bard
 import os
-from nltk.sentiment import SentimentIntensityAnalyzer
-sia = SentimentIntensityAnalyzer()
+
 
 app = Flask(__name__)
 
