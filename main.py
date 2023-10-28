@@ -7,6 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import re
 from helper import login_required
 from datetime import date
+from bardapi import Bard
+import os
 
 app = Flask(__name__)
 
@@ -99,6 +101,64 @@ def den():
             
         print(set)
         return render_template("den.html", open2 = True, set=set)
+    #journal input 
+    if request.method == "POST" and "journalQuestion" in request.form:
+        
+        input = request.form.get('journalInput')
+        day = date.today()
+        answer = ""
+        journal_rows = []
+
+        apiKey = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'api'",
+                                        date=day, user_id=session['user_id'])
+        
+        # currently my Bard is not conversational TODO
+        try:
+            os.environ['_BARD_API_KEY']=apiKey[0]['text']
+        except:
+            flash("Oh no! Your bard API token is missing :( ")
+
+        try: 
+            answer = Bard().get_answer(input)['content']
+        except: 
+            flash("Oh no! Your bard API token may be inactive :( ")
+
+        print(answer)
+        if not input.isspace() and answer != "":
+            db.execute("INSERT INTO journal (user_id, text, date, author) VALUES(:user_id, :text, :date, 'Me')",
+                 user_id = session['user_id'], text = input, date=day)
+            db.execute("INSERT INTO journal (user_id, text, date, author) VALUES(:user_id, :text, :date, 'AI')",
+                 user_id = session['user_id'], text = answer, date=day)
+        
+
+        journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
+                                        date=day, user_id=session['user_id'])
+        print(journal_rows)
+        return render_template("den.html", open3 = True, journal_rows=journal_rows)
+    
+    if request.method == "POST" and "apiKey" in request.form:
+        
+        input = request.form.get('api')
+        day = date.today()
+        journal_rows = []
+
+        if input.isspace() or input == None or input == "":
+            #replace with date code
+            flash("Plese enter an api key :)")  
+        
+        
+        rows = db.execute("SELECT * FROM journal WHERE user_id = :user_id AND author = 'api' ", user_id=session["user_id"], )
+        if len(rows) > 0:
+            print("updateed api key")
+            db.execute("UPDATE 'journal' SET 'text' = :text WHERE user_id = :user_id AND date = :date AND author = 'api' ", text=input, user_id=session["user_id"], date=day)
+        else:
+            db.execute("INSERT INTO journal (user_id, text, date, author) VALUES(:user_id, :text, :date, 'api')",
+                 user_id = session['user_id'], text = input, date=day)   
+        
+        journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
+                                        date=day, user_id=session['user_id'])
+        
+        return render_template("den.html", open3 = True, journal_rows=journal_rows)
 
     # opening views 
     if request.method == "POST" and "updateView" in request.form:
@@ -124,7 +184,24 @@ def den():
             return render_template("den.html", set=set, open2 = True)
         
         if input == "open3": #journal
-            return render_template("den.html", open3 = True)
+            print("open3")
+            day = date.today()
+
+            journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
+                                        date=day, user_id=session['user_id'])
+            print(journal_rows)
+            #delete all not in this date
+            db.execute("DELETE FROM journal WHERE date <> :date", date=day) # ERROR? <> means not equal to 
+            #mood setting TODO
+            sentiment = 0 #use ai for this 
+
+            #TODO potential problem
+            try:
+                db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date AND via = :via", mood=sentiment, user_id=session["user_id"], date=day, via="journal")
+            except:
+                db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='tracker', date=day, mood=int(input))
+        
+            return render_template("den.html", open3 = True, journal_rows = journal_rows)
         
         if input == "close": #open nothing
             return render_template("den.html")

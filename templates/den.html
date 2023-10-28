@@ -41,7 +41,7 @@
         <form action="/den" method="post">
           <div class="form-group">
             <label for="input">Add something to your to do list</label>
-            <input name="input" id="input" type="text" class="form-control" placeholder="Enter something to do">
+            <input name="input" id="input" autocomplete="off" type="text" class="form-control" placeholder="Enter something to do">
           </div>
           <button name="inputTodo" type="submit" class="btn btn-primary">Submit</button>
         </form>
@@ -91,9 +91,9 @@
 
 
         <div>
-          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map" border="0" width="100%" alt="" />
+          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map2" border="0" width="100%" alt="" />
         </div>
-        <map id="map_ID" name="map">
+        <map id="map_ID" name="map2">
 
           <form id="moodForm" action="/den" method="post">
             <area shape="circle" coords="206, 232, 33" onmouseover="hover2('den/mood', '1');"
@@ -116,7 +116,7 @@
     </div>
   </div>
 
-  <div id="journalOverlay" class="overlay" style="">
+  <div id="journalOverlay" class="overlay">
 
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav('journalOverlay')">&times;</a>
     <div class="overlay-content" style="overflow-x: hidden;
@@ -169,6 +169,19 @@
         <!--Change font size  -->
         <h2>Reccomended</h2>
         <!-- based on values with emotional analysis -->
+        <p> API Key </p>
+        
+        <form action="/den" method="post">
+          <input name="api" id="api" type="text" autocomplete="off" class="form-control" placeholder="Enter something to do">
+          <button name="apiKey" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                {% endif %}
+        {% endwith %}
 
       </div>
 
@@ -176,16 +189,29 @@
         <h1> something </h1>
 
         <!-- Example div for user input -->
-        <div style="text-align: left; background-color: floralwhite; display: inline-block; width: 100%; margin-bottom: 10px;">      
-          <div style="width: 10%; height: 100%; float: left;">
-            <img src="static/img/den/personIcon.png" alt="Person icon" style="object-fit: cover; width: 100%; height: auto;">
-            <p>Me</p>
-          </div>     
-          <div style="float: left; width: 90%;">Text Content goes here... (without spaces text is covered on overflow...)</div>
-        </div>
+        {% for journal_row in journal_rows %}
+        <div style="text-align: left;
+          {% if journal_row['author'] == 'AI' %} background-color: floralwhite; {% endif %}
+          {% if journal_row['author'] == 'Me' %} background-color: rgb(231, 213, 177); {% endif %}
+          display: inline-block; width: 100%; margin-bottom: 10px;"> 
 
-        
-        
+            <div style="width: 10%; height: 100%; float: left;">
+              {% if journal_row['author'] == 'AI' %}
+              <!-- ai icon -->
+              <img src="static/img/den/personIcon.png" alt="Person icon" style="object-fit: cover; width: 100%; height: auto;">
+              {% endif %}
+
+              {% if journal_row['author'] == 'Me' %}
+              <img src="static/img/den/personIcon.png" alt="Person icon" style="object-fit: cover; width: 100%; height: auto;">
+              {% endif %}
+              <p>{{ journal_row['author'] }}</p>
+            </div>     
+            <div style="float: left; width: 90%;">{{ journal_row['text'] }}</div>
+        </div>
+        {% endfor %}
+            <tr>
+
+
         <!-- Blank div for control -->
         <div style="height: 25%;"> </div>
 
@@ -198,8 +224,8 @@
         <div style="display: inline-block;">
           <button style="float: left;" onclick="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;">V</button>
           <form action="/den" method="post">
-            <input type="text" autocomplete="off" name="input" placeholder="Enter something">
-            <input name="journalQuestion" type="submit" value="Submit">
+            <input name="journalInput" id="journalInput" type="text" autocomplete="off" class="form-control" placeholder="Enter something to do">
+            <button name="journalQuestion" type="submit" class="btn btn-primary">Submit</button>
           </form>
           <!--create post function and connect to ai  -->
           
