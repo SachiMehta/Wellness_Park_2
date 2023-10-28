@@ -1,5 +1,9 @@
 # *gasp* It's in Flask!
 
+# ONLY DO THIS ONCE
+# import nltk 
+# nltk.download("vader_lexicon")
+
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from cs50 import SQL
@@ -9,6 +13,8 @@ from helper import login_required
 from datetime import date
 from bardapi import Bard
 import os
+from nltk.sentiment import SentimentIntensityAnalyzer
+sia = SentimentIntensityAnalyzer()
 
 app = Flask(__name__)
 
@@ -41,7 +47,7 @@ def den():
 
     # todo update methods 
     if request.method == "POST" and "inputTodo" in request.form:
-        
+
         input = request.form.get('input')
         if input.isspace() or input == None or input == "":
             rows = db.execute("SELECT * FROM 'todo' WHERE user_id = ?", session["user_id"])
@@ -101,13 +107,32 @@ def den():
             
         print(set)
         return render_template("den.html", open2 = True, set=set)
+    
     #journal input 
     if request.method == "POST" and "journalQuestion" in request.form:
-        
+        # TODO add sentiment update 
+
         input = request.form.get('journalInput')
         day = date.today()
         answer = ""
         journal_rows = []
+        sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
+
+
+        userText = ""
+        userText_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'Me' ",
+                                    date=day, user_id=session['user_id'])
+        for row in userText_rows:
+            userText = userText + " " + row['text']
+
+        print(userText)
+
+        #based on the words used in the sentence, a sentiment is analyzed
+        print("This is VADER")
+        sentiment_results = sia.polarity_scores(userText)
+        print(sentiment_results)
+        print()
+        sentiment =  (sentiment_results['compound'] + 1)/2*5 #use ai for this 
 
         apiKey = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'api'",
                                         date=day, user_id=session['user_id'])
@@ -123,7 +148,6 @@ def den():
         except: 
             flash("Oh no! Your bard API token may be inactive :( ")
 
-        print(answer)
         if not input.isspace() and answer != "":
             db.execute("INSERT INTO journal (user_id, text, date, author) VALUES(:user_id, :text, :date, 'Me')",
                  user_id = session['user_id'], text = input, date=day)
@@ -133,21 +157,38 @@ def den():
 
         journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
                                         date=day, user_id=session['user_id'])
-        print(journal_rows)
-        return render_template("den.html", open3 = True, journal_rows=journal_rows)
+        return render_template("den.html", open3 = True, journal_rows=journal_rows, sentiment_results = sentiment_results)
     
     if request.method == "POST" and "apiKey" in request.form:
-        
+        # TODO add sentiment update
         input = request.form.get('api')
         day = date.today()
         journal_rows = []
+        sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
+
+
+        userText = ""
+        userText_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'Me' ",
+                                    date=day, user_id=session['user_id'])
+        for row in userText_rows:
+            userText = userText + " " + row['text']
+
+        print(userText)
+
+        #based on the words used in the sentence, a sentiment is analyzed
+        print("This is VADER")
+        sentiment_results = sia.polarity_scores(userText)
+        print(sentiment_results)
+        print()
+        sentiment =  (sentiment_results['compound'] + 1)/2*5 #use ai for this 
+
 
         if input.isspace() or input == None or input == "":
             #replace with date code
             flash("Plese enter an api key :)")  
         
         
-        rows = db.execute("SELECT * FROM journal WHERE user_id = :user_id AND author = 'api' ", user_id=session["user_id"], )
+        rows = db.execute("SELECT * FROM journal WHERE user_id = :user_id AND author = 'api' ", user_id=session["user_id"])
         if len(rows) > 0:
             print("updateed api key")
             db.execute("UPDATE 'journal' SET 'text' = :text WHERE user_id = :user_id AND date = :date AND author = 'api' ", text=input, user_id=session["user_id"], date=day)
@@ -158,7 +199,7 @@ def den():
         journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
                                         date=day, user_id=session['user_id'])
         
-        return render_template("den.html", open3 = True, journal_rows=journal_rows)
+        return render_template("den.html", open3 = True, journal_rows=journal_rows, sentiment_results = sentiment_results)
 
     # opening views 
     if request.method == "POST" and "updateView" in request.form:
@@ -184,30 +225,49 @@ def den():
             return render_template("den.html", set=set, open2 = True)
         
         if input == "open3": #journal
+            # TODO add sentiment 
             print("open3")
             day = date.today()
+            sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
 
             journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
                                         date=day, user_id=session['user_id'])
-            print(journal_rows)
             #delete all not in this date
             db.execute("DELETE FROM journal WHERE date <> :date", date=day) # ERROR? <> means not equal to 
             #mood setting TODO
-            sentiment = 0 #use ai for this 
 
-            #TODO potential problem
-            try:
+            userText = ""
+            userText_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'Me' ",
+                                        date=day, user_id=session['user_id'])
+            for row in userText_rows:
+                userText = userText + " " + row['text']
+
+            print(userText)
+
+            #based on the words used in the sentence, a sentiment is analyzed
+            print("This is VADER")
+            sentiment_results = sia.polarity_scores(userText)
+            print(sentiment_results)
+            print()
+            sentiment =  (sentiment_results['compound'] + 1)/2*5 #use ai for this 
+
+
+            mood_rows = db.execute("SELECT * FROM mood WHERE user_id = :user_id AND date = :date AND via = 'journal' ", user_id=session["user_id"], date=day)
+            if len(mood_rows) > 0:
+                print("updateed mood")
                 db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date AND via = :via", mood=sentiment, user_id=session["user_id"], date=day, via="journal")
-            except:
-                db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='tracker', date=day, mood=int(input))
+            else:
+                db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='journal', date=day, mood=int(sentiment)) 
         
-            return render_template("den.html", open3 = True, journal_rows = journal_rows)
+            return render_template("den.html", open3 = True, journal_rows = journal_rows, sentiment_results = sentiment_results)
         
         if input == "close": #open nothing
             return render_template("den.html")
+    
+    sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
 
   
-    return render_template("den.html")
+    return render_template("den.html", sentiment_results = sentiment_results)
 
 
 @app.route('/login', methods=["GET", "POST"])

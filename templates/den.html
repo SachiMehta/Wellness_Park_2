@@ -128,42 +128,54 @@
       
       <div style="background-color: coral; width: 20%; height: 100%; display: block; float: left;">
           <h2>Mood</h2>
-        
+        <!-- <h2 id="demochart"></h2> -->
+
         <div style="height:20%">
           <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
           
           <!-- CHART may have to move to Jinja -->
+          {% if sentiment_results is defined %}
+            <meta id="chart-data" data-pos="{{sentiment_results['pos']}}" data-neg="{{sentiment_results['neg']}}" data-neu="{{sentiment_results['neu']}}">
+          {% else %}
+          <meta id="chart-data" data-pos="0" data-neg="0" data-neu="0">
+          {% endif %}
+            <!-- <meta id="chart-data-pos" data-pos="{{sentiment_results}}"> -->
           <script>
-              const xValues = ["Positive", "Neutral", "Negative"];
-              // these values will be based on the sentiment of the conversation using python 
-              // have to move this into a js jinja block 
-              // the overall sentiment will be added to the graph for each day in chart 
-              const yValues = [5, 3, 5];
-              const barColors = [
-                "red",
-                "yellow",
-                "green",
-              ];
-              
-              new Chart("myChart", {
-                type: "pie",
-                data: {
-                  labels: xValues,
-                  datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues
-                  }]
-                },
-                options: {
-                  legend:
-                    {display:false},
-                  title: {
-                    display: false,
-                    text: "World Wide Wine Production 2018"
-                  }
+            var pos_data = $('#chart-data').data("pos");
+            var neg_data = $('#chart-data').data("neg");
+            var neu_data = $('#chart-data').data("neu");
+            //document.getElementById("demochart").innerHTML = pos_data;
+            const xValues = ["Positive", "Neutral", "Negative"];
+            // these values will be based on the sentiment of the conversation using python 
+            // have to move this into a js jinja block 
+            // the overall sentiment will be added to the graph for each day in chart 
+            const yValues = [pos_data, neg_data, neu_data];
+            const barColors = [
+              "green",
+              "yellow",
+              "red",
+            ];
+            
+            new Chart("myChart", {
+              type: "pie",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor: barColors,
+                  data: yValues
+                }]
+              },
+              options: {
+                legend:
+                  {display:false},
+                title: {
+                  display: false,
+                  text: "World Wide Wine Production 2018"
                 }
-              });
-          </script>
+              }
+            });
+        </script>
+        
 
         </div>
         <!--Change font size  -->
@@ -321,6 +333,7 @@
       z-index:1;
      }
    </style>
+
 
   {% block javascript %}
 
