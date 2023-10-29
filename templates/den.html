@@ -13,9 +13,9 @@
   <!-- todo -->
   <area shape="rect" coords="532, 15, 620, 111" onmouseover="hover('den', 'todo');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open'); " />
-  <!-- calendar -->
+  <!-- chart -->
   <area shape="rect" coords="947, 9, 1066, 140" onmouseover="hover('den', 'calendar');" onmouseout="unhover('den');"
-    onclick="" />
+    onclick="sub('ignore', 'open4')" />
   <!-- newton's cradle-->
   <area shape="rect" coords="704, 169, 813, 257" onmouseover="hover('den', 'cradle');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open2');" />
@@ -91,21 +91,21 @@
 
 
         <div>
-          <img id="img_ID2" src="static/img/den/mood/nav{{set}}.png" usemap="#map2" border="0" width="100%" alt="" />
+          <img id="img_ID2" src="static/img/den/mood/nav{{setMood}}.png" usemap="#map2" border="0" width="100%" alt="" />
         </div>
         <map id="map_ID" name="map2">
 
           <form id="moodForm" action="/den" method="post">
             <area shape="circle" coords="206, 232, 33" onmouseover="hover2('den/mood', '1');"
-              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='1')" />
+              onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='1')" />
             <area shape="circle" coords="280, 232, 33" onmouseover="hover2('den/mood', '2');"
-              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='2')" />
+              onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='2')" />
             <area shape="circle" coords="348, 232, 33" onmouseover="hover2('den/mood', '3');"
-              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='3')" />
+              onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='3')" />
             <area shape="circle" coords="418, 232, 33" onmouseover="hover2('den/mood', '4');"
-              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='4')" />
+              onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='4')" />
             <area shape="circle" coords="480, 232, 33" onmouseover="hover2('den/mood', '5');"
-              onmouseout="unhover2('den/mood/nav{{set}}.png');" onclick="sub(mood='5')" />
+              onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='5')" />
 
             <input type="hidden" name="moodInput" id="moodInput">
             <input type="submit" id="moodsub" style="display: none;" name="mood">
@@ -131,7 +131,7 @@
         <!-- <h2 id="demochart"></h2> -->
 
         <div style="height:20%">
-          <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+          <canvas id="journalChart" style="width:100%;max-width:700px"></canvas>
           
           <!-- CHART may have to move to Jinja -->
           {% if sentiment_results is defined %}
@@ -156,7 +156,7 @@
               "red",
             ];
             
-            new Chart("myChart", {
+            new Chart("journalChart", {
               type: "pie",
               data: {
                 labels: xValues,
@@ -170,7 +170,7 @@
                   {display:false},
                 title: {
                   display: false,
-                  text: "World Wide Wine Production 2018"
+                  text: "Mood"
                 }
               }
             });
@@ -179,7 +179,7 @@
 
         </div>
         <!--Change font size  -->
-        <h2>Reccomended</h2>
+        <!-- <h2>Reccomended</h2> -->
         <!-- based on values with emotional analysis -->
         <p> API Key </p>
         
@@ -247,6 +247,81 @@
       </div>
     </div>
   </div>
+
+  <div id="chartOverlay" class="overlay">
+
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('chartOverlay')">&times;</a>
+    <div class="overlay-content" style="overflow-x: hidden;
+    overflow-y: hidden; text-align: center;">
+
+      <div class="inner-overlay-content">
+        <h1 style="text-align: center;">Charts</h1>
+      </div>
+<h2 id="demochart2"></h2>
+        <div style="height: 80%; width: 80%; text-align:center; margin-left: 10%;">
+          <canvas id="myChart" style="width:100%; max-width:700px;"></canvas>
+          
+          <!-- CHART may have to move to Jinja -->
+          {% if moodX is defined %}
+          <h6 style="display:none"id="chartMoodX">{{moodX}}</h6>
+          <h6 style="display:none"id="chartTrackerY">{{trackerY}}</h6> 
+          <h6 style="display:none"id="chartJournalY">{{journalY}}</h6> 
+          {% else %}
+          <h6 style="display:none"id="chartMoodX">0</h6>
+          <h6 style="display:none"id="chartTrackerY">0</h6> 
+          <h6 style="display:none"id="chartJournalY">0</h6> 
+          {% endif %}
+            <!-- <meta id="chart-data-pos" data-pos="{{sentiment_results}}"> -->
+          <script>
+            var moodX = $('#chartMoodX').text();
+            var trackerY = $('#chartTrackerY').text();
+            var journalY = $('#chartJournalY').text();
+            //document.getElementById("demochart2").innerHTML = moodX;
+
+            var mychartX = moodX.split(" ");
+
+          new Chart("myChart", {
+            type: "line",
+            data: {
+              labels: mychartX,
+              datasets: [{
+                label: "Your Inputed Mood",
+                data: trackerY.split(" "),
+                borderColor: "rgb(84, 153, 199)",
+                fill: false
+              },{
+                label: "Your Analyzed Mood",
+                data: journalY.split(" "),
+                borderColor: "green",
+                fill: false
+              }]
+            },
+            
+            options: {
+                legend: {display: true},
+                spanGaps: true,
+                scales: {
+                   xAxes: [{
+                      ticks: {
+                      display: false //this will remove only the label
+                      }
+                }]
+              },
+              layout: {
+                padding: {
+                  left: 10
+                }
+                }
+          }
+        });
+              
+              
+        </script>
+
+      </div>
+    </div>
+  </div>
+
 
   <div id="timerOverlay" class="overlay">
 
@@ -351,6 +426,11 @@
   {% if open3 %}
   <script>document.getElementById('journalOverlay').style.width = "100%";
   document.getElementById("mainBody").style.overflow = "hidden"</script>
+  {% endif %}
+
+  {% if open4 %}
+  <script>document.getElementById('chartOverlay').style.width = "100%";
+    document.getElementById("mainBody").style.overflow = "hidden"</script>
   {% endif %}
   
   {% endblock %}

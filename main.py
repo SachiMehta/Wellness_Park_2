@@ -19,7 +19,7 @@ from cs50 import SQL
 from werkzeug.security import check_password_hash, generate_password_hash
 import re
 from helper import login_required
-from datetime import date
+from datetime import date as DT
 from bardapi import Bard
 import os
 
@@ -90,38 +90,37 @@ def den():
     # mood update methods 
     if request.method == "POST" and "mood" in request.form:
         input = request.form.get('moodInput')
-        day = date.today()
-        print(date)
+        day = DT.today()
 
-        set = ""
+        setMood = ""
         rows = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker' ",
                                 date=day, user_id=session['user_id'])
         
         try:
             db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date AND via = 'tracker'", mood=input, user_id=session["user_id"], date=day)
-            set = rows[0]['mood']
+            setMood = rows[0]['mood']
         except:
             db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='tracker', date=day, mood=int(input))
-            set = ""
+            setMood = ""
 
-        set = ""
+        setMood = ""
         mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker' ",
                                     date=day, user_id=session['user_id'])
         try:
-            set = mood[0]['mood']
+            setMood = mood[0]['mood']
         except:
-            set = ""
+            setMood = ""
         
             
-        print(set)
-        return render_template("den.html", open2 = True, set=set)
+        print(setMood)
+        return render_template("den.html", open2 = True, setMood = setMood)
     
     #journal input 
     if request.method == "POST" and "journalQuestion" in request.form:
         # TODO add sentiment update 
 
         input = request.form.get('journalInput')
-        day = date.today()
+        day = DT.today()
         answer = ""
         journal_rows = []
         sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
@@ -165,12 +164,16 @@ def den():
 
         journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
                                         date=day, user_id=session['user_id'])
+        
+        if sentiment_results['neg'] == 0 and sentiment_results['neu'] == 0 and sentiment_results['pos'] == 0 :
+                sentiment_results = {'neg': 1, 'neu': 1, 'pos': 1, 'compound': 0}
+
         return render_template("den.html", open3 = True, journal_rows=journal_rows, sentiment_results = sentiment_results)
     
     if request.method == "POST" and "apiKey" in request.form:
         # TODO add sentiment update
         input = request.form.get('api')
-        day = date.today()
+        day = DT.today()
         journal_rows = []
         sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
 
@@ -207,6 +210,9 @@ def den():
         journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
                                         date=day, user_id=session['user_id'])
         
+        if sentiment_results['neg'] == 0 and sentiment_results['neu'] == 0 and sentiment_results['pos'] == 0 :
+                sentiment_results = {'neg': 1, 'neu': 1, 'pos': 1, 'compound': 0}
+
         return render_template("den.html", open3 = True, journal_rows=journal_rows, sentiment_results = sentiment_results)
 
     # opening views 
@@ -220,22 +226,22 @@ def den():
             
         if input == "open2": #mood tracker
             
-            day = date.today()
-            set = ""
+            day = DT.today()
+            setMood = ""
             mood = db.execute("SELECT * FROM mood WHERE date = :date AND user_id = :user_id AND via = 'tracker'",
                                         date=day, user_id=session['user_id'])
             try:
-                set = mood[0]['mood']
+                setMood = mood[0]['mood']
             except:
-                set = ""
-            print(set)
+                setMood = ""
+            print(setMood)
 
-            return render_template("den.html", set=set, open2 = True)
+            return render_template("den.html", setMood=setMood, open2 = True)
         
         if input == "open3": #journal
-            # TODO add sentiment 
+            
             print("open3")
-            day = date.today()
+            day = DT.today()
             sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
 
             journal_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author <> 'api' ",
@@ -267,16 +273,87 @@ def den():
             else:
                 db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='journal', date=day, mood=int(sentiment)) 
         
+            if sentiment_results['neg'] == 0 and sentiment_results['neu'] == 0 and sentiment_results['pos'] == 0 :
+                sentiment_results = {'neg': 1, 'neu': 1, 'pos': 1, 'compound': 0}
             return render_template("den.html", open3 = True, journal_rows = journal_rows, sentiment_results = sentiment_results)
+        
+        if input == "open4": #chart
+            day = DT.today()
+            trackerDict = {}
+            journalDict = {}
+            moodX_array = []
+            trackerY_array = []
+            journalY_array = []
+
+            moodX = " "
+            trackerY = " "
+            journalY = " "
+
+            journal_mood_rows = db.execute("SELECT * FROM mood WHERE user_id = :user_id AND via = 'journal' ", user_id=session["user_id"])
+            tracker_mood_rows = db.execute("SELECT * FROM mood WHERE user_id = :user_id AND via = 'tracker' ", user_id=session["user_id"])
+
+            
+            for row in journal_mood_rows:
+                moodX_array.append(row['date'])
+                journalDict[row['date']] = row['mood']
+            for row in tracker_mood_rows:
+                moodX_array.append(row['date'])
+                trackerDict[row['date']] = row['mood']
+            
+            moodX_array = list(set(moodX_array))
+            moodX_array.sort()
+            for x in moodX_array:
+                try: 
+                    print(x)
+                    journalY_array.append(journalDict[x])
+                except KeyError:
+                    journalY_array.append("null")
+                try:
+                    trackerY_array.append(trackerDict[x])
+                except KeyError:
+                    trackerY_array.append("null")
+
+            print(moodX_array)
+            for x in moodX_array:
+                moodX = moodX + " " + str(x)
+            for mood in trackerY_array:
+                trackerY = trackerY + " " + str(mood)
+            for mood in journalY_array:
+                journalY = journalY + " " + str(mood)                
+
+            print(trackerY)
+            print(journalY)
+            
+            print("open4")
+
+            # update mood
+            userText = ""
+            userText_rows = db.execute("SELECT * FROM journal WHERE date = :date AND user_id = :user_id AND author = 'Me' ",
+                                        date=day, user_id=session['user_id'])
+            for row in userText_rows:
+                userText = userText + " " + row['text']
+            print("This is VADER")
+            sentiment_results = sia.polarity_scores(userText)
+            print(sentiment_results)
+            print()
+            sentiment =  (sentiment_results['compound'] + 1)/2*5 #use ai for this 
+            print(sentiment)
+
+            mood_rows = db.execute("SELECT * FROM mood WHERE user_id = :user_id AND date = :date AND via = 'journal' ", user_id=session["user_id"], date=day)
+            if len(mood_rows) > 0:
+                print("updateed mood")
+                db.execute("UPDATE 'mood' SET 'mood' = :mood WHERE user_id = :user_id AND date = :date AND via = :via", mood=sentiment, user_id=session["user_id"], date=day, via="journal")
+            else:
+                db.execute("INSERT INTO 'mood' (user_id, via, date, mood) VALUES (:user_id, :via, :date, :mood)", user_id=session['user_id'], via='journal', date=day, mood=int(sentiment)) 
+        
+
+
+            return render_template("den.html", open4=True, moodX = moodX, journalY = journalY, trackerY = trackerY)
+        
         
         if input == "close": #open nothing
             return render_template("den.html")
-    
-    sentiment_results = {'neg': 0, 'neu': 0, 'pos': 0, 'compound': 0}
-
-  
-    return render_template("den.html", sentiment_results = sentiment_results)
-
+    return render_template("den.html")
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
