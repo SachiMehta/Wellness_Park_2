@@ -2,26 +2,33 @@
 
 {% block main %}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <div style="width:100%;">
   <img id="img_ID" src="static/img/den/nav.png" usemap="#map" border="0" width="100%" alt="" />
 </div>
 <map id="map_ID" name="map">
   <form id="updateViewForm" action="/den" method="post">
   <!-- journal -->
-  <area shape="rect" coords="417, 173, 588, 265" onmouseover="hover('den', 'journal');" onmouseout="unhover('den');" 
+  <area shape="rect" coords="630, 444, 821, 485" onmouseover="hover('den', 'journal');" onmouseout="unhover('den');" 
     onclick="sub('ignore', 'open3');"/>
   <!-- todo -->
-  <area shape="rect" coords="532, 15, 620, 111" onmouseover="hover('den', 'todo');" onmouseout="unhover('den');"
+  <area shape="rect" coords="485, 137, 669, 342" onmouseover="hover('den', 'todo');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open'); " />
   <!-- chart -->
-  <area shape="rect" coords="947, 9, 1066, 140" onmouseover="hover('den', 'calendar');" onmouseout="unhover('den');"
+  <area shape="rect" coords="154, 135, 424, 335" onmouseover="hover('den', 'calendar');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open4')" />
   <!-- newton's cradle-->
-  <area shape="rect" coords="704, 169, 813, 257" onmouseover="hover('den', 'cradle');" onmouseout="unhover('den');"
+  <area shape="rect" coords="236, 353, 458, 485" onmouseover="hover('den', 'cradle');" onmouseout="unhover('den');"
     onclick="sub('ignore', 'open2');" />
   <!-- timer-->
-  <area shape="rect" coords="1040, 152, 1184, 249" onmouseover="hover('den', 'timer');" onmouseout="unhover('den');"
+  <area shape="circle" coords="1265, 108, 24" onmouseover="hover('den', 'timer');" onmouseout="unhover('den');"
     onclick="openNav('timerOverlay')" />
+
+  <!-- home  -->
+  <area shape="circle" coords="1180, 108, 24" onmouseover="hover('den', 'home');" onmouseout="unhover('den');"
+      onclick="location.href='/'; startUp();" />
+    
     <input type="hidden" name="updateViewHid" id="updateViewHid">
     <input type="submit" id="updateView" style="display: none;"  name="updateView">
 </form>
@@ -57,9 +64,9 @@
 
               <form action="/den" method="post">
                 {% if row['checked'] == 0 %}
-                <td width="5%"><input id="check{{row['id']}}" type="submit" name="check-todo" value="0"></td>
+                <td width="5%"><input style = "background-color: whitesmoke; border-radius: 50%; border-color: whitesmoke; color: whitesmoke;" id="check{{row['id']}}" type="submit" name="check-todo" value="0"></td>
                 {% elif row['checked'] == 1 %}
-                <td width="5%"><input style="background-color: black" onclick="this.form.submit()"
+                <td width="5%"><input style="background-color: sandybrown; border-radius: 50%; border-color: sandybrown; color: sandybrown;" onclick="this.form.submit()"
                     id="check{{row['id']}}" type="submit" name="check-todo" value="1"></td>
                 {% endif %}
                 <input type="hidden" name="id" value="{{row['id']}}">
@@ -68,7 +75,7 @@
               <!-- fix the ids because they are not right -->
               <td width="85%" style="text-align:left">{{row['task']}}</td>
               <form action="/den" method="post">
-                <td width="10%"><button name="del-todo" id="del-{{row['id']}}" value="{{row['id']}}">delete</button>
+                <td width="10%"><button name="del-todo" id="del-{{row['id']}}" value="{{row['id']}}" class="btn btn-danger">X</button>
                 </td>
               </form>
             </tr>
@@ -106,6 +113,7 @@
               onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='4')" />
             <area shape="circle" coords="480, 232, 33" onmouseover="hover2('den/mood', '5');"
               onmouseout="unhover2('den/mood/nav{{setMood}}.png');" onclick="sub(mood='5')" />
+            
 
             <input type="hidden" name="moodInput" id="moodInput">
             <input type="submit" id="moodsub" style="display: none;" name="mood">
@@ -332,68 +340,57 @@
       <div class="inner-overlay-content">
         <h1 style="text-align: center;">Productivity Timer</h1>
 
-        <div style="display:inline">
+        
+        <div style="display:inline;">
 
-          <form>
-            <h2 style="display:inline"> <input dir="rtl" type=number min="0" max="100" id="mins" style="  border: none;
+          <form style="margin-top: 100px;">
+            <h2 style="display:inline"> <input dir="rtl" type=number min="0" max="100" id="mins" style=" border: none;
             display: inline;
             font-family: inherit;
-            font-size: inherit;
+            font-size: 100px;
             padding: none;
-            background: none;">
-            </h2><h2 style="display:inline">:</h2> 
-            <h2 style="display:inline"> <input type=number min="0" max="100" id="secs" style="  border: none;
+            background: none;
+            width: 155px;">
+            </h2><h2 style="display:inline; font-size: 100px;">:</h2> 
+            <h2 style="display:inline; font-size: 100px;"> <input type=number min="0" max="100" id="secs" style="  border: none;
             display: inline;
             font-family: inherit;
-            font-size: inherit;
+            font-size: 100px;
             padding: none;
-            background: none;">
+            background: none;
+            width: 155px;">
             </h2>
           </form>
-          
-  <input type=button id="play" value="start" onclick="start()">
-  <input type=button id="pause" value="stop" onclick="stop()">
-  <input type=button id="reset" value="reset" onclick="reset()">
-<p id="demo"> meow</p>
+
+            <button id="play" onclick="start()" class="btn btn-info"><i class="fa fa-play" style="font-size: 25px; margin:5px;"></i></button>
+            <button id="stop" onclick="stop()" class="btn btn-info"><i class="fa fa-pause" style="font-size: 25px; margin:5px;"></i></button>
+            <button id="reset" onclick="reset()" class="btn btn-info"><i class="fa fa-refresh" style="font-size: 25px; margin:5px;"></i></button>
+          <p style="display:none" id="demo"> meow</p>
           
         <div>
-          <script> 
-          var input = document.getElementById('mins'); // get the input element
-          input.addEventListener('input', resizeInput); 
-          // bind the "resizeInput" callback on "input" event
-          resizeInput.call(input); // immediately call the function
-          function resizeInput() {
-            this.style.width = this.value.length * 8 + 55 + "px";}
-
-          var input = document.getElementById('secs'); // get the input element
-          input.addEventListener('input', resizeInput); 
-          // bind the "resizeInput" callback on "input" event
-          resizeInput.call(input); // immediately call the function
-          function resizeInput() {
-            this.style.width = this.value.length * 8 + 60 + "px";}
-          </script>
 
       </div>
     </div>
-    </div>
+   </div>
   </div>
   </div>
   
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
-  <div style="background-color: antiquewhite;" class="topcorner">
+  <div style="background-color: rgb(254, 249, 231); padding: 5px; border-radius: 5px;" class="topcorner">
     <h2 style="display:inline;" class="mins2"></h2>
     <h2 style="display:inline;">:</h2> 
     <h2 style="display:inline;" class="secs2"></h2>
   </div>
 
-  <button type="button" onclick="location.href='/park'; startUp();" id="welcome-button"
+  <button type="button" onclick="location.href='/'; startUp();" id="welcome-button"
         class="btn btn-success, topleft">begin</button>
   <!-- <a class="source" href="https://www.youtube.com/watch?v=PIiMSMz7KzM">How to build a Countdown Timer in JavaScript - dcode</a> -->
 
   <style type="text/css">
     .topcorner{
       position:absolute;
+      margin: 5%;
       top:0;
       right:0;
       z-index:1;
