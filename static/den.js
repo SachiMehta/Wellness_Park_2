@@ -95,6 +95,7 @@ function reset()
 
 
 function stop(){
+  document.getElementById("play").disabled = false;
   localStorage.setItem('playing', "false");
   clearInterval(x);
   x = null
@@ -104,6 +105,7 @@ function stop(){
 
 // Set the date we're counting down to
 function start(){
+document.getElementById("play").disabled = true;
 document.getElementById("mins").disabled = true;
 document.getElementById("secs").disabled = true;
 
@@ -119,6 +121,10 @@ timerstart();
 //start the timer
 function timerstart(){
 //set end time 
+  document.getElementById("mins").disabled = true;
+  document.getElementById("secs").disabled = true;
+  document.getElementById("play").disabled = true;
+  
 var td = new Date().getTime();
 var endTime = td + JSON.parse(localStorage.getItem('distance'));
 //document.getElementById("demo").innerHTML = localStorage.getItem('distance');
@@ -145,7 +151,7 @@ x = setInterval(function() {
   // If the count down is over, write some text 
   if (distance <= 1000) {
     localStorage.setItem("distance", 0)
-    show("0", "0")
+    show("00", "00")
     
     stop()
     document.getElementById("demo").innerHTML = "EXPIRED";
